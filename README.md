@@ -1,71 +1,111 @@
-# 🪙 Bitcoin Regtest Docker Network
+# 📄 Bitcoin Regtest Docker Setup
 
-This project sets up a **private Bitcoin regtest network** using **Docker** and **bitcoin-core**. It includes two nodes (`node1` and `node2`) configured to connect with each other and interact via RPC.
+## 🚀 Project Overview
 
----
+This project sets up a **2-node Bitcoin Core network** in **regtest mode** using Docker. It is ideal for testing and learning purposes in a private blockchain environment.
 
-## 🚀 Features
+## 🛠️ Prerequisites
 
-- Two Bitcoin nodes running in `regtest` mode
-- Wallet creation for both nodes
-- Mining and sending BTC transactions
-- Automatic setup using `setup.sh`
-- Based on the official `bitcoin-core` Docker image
-
----
+- [Docker](https://www.docker.com/)
+- [Docker Compose](https://docs.docker.com/compose/)
+- Unix-based shell (`bash`)
+- Internet connection (for initial Docker image pull)
 
 ## 📁 Directory Structure
 
-bitcoin-regtest-docker/
+```
+bitcoin-core/
 ├── Dockerfile
 ├── docker-compose.yaml
 ├── setup.sh
 └── README.md
----
+```
 
-## 🛠️ Requirements
-
-- Docker
-- Docker Compose
-
----
-
-## 📦 Setup Instructions
+## ⚙️ Setup Instructions
 
 ### 1. Clone the Repository
 
-git clone https://github.com/yourusername/bitcoin-regtest-docker.git
-cd bitcoin-regtest-docker
-2. Build and Start the Nodes
-docker-compose down -v        # Clean up any previous runs
-docker-compose build          # Build the Docker image
-docker-compose up -d          # Start the Bitcoin nodes
-3. Run the Setup Script
+```
+git clone git@github.com:devalvamsee/bitcoin-core.git
+cd bitcoin-core
+```
+
+### 2. Build and Start the Docker Containers
+
+```
+docker-compose down -v       # Clean previous volumes
+docker-compose build         # Build the Docker images
+docker-compose up -d         # Start containers in detached mode
+```
+
+### 3. Initialize the Network
+
+Run the setup script to:
+
+- Wait for both nodes to be ready
+- Create wallets on both nodes
+- Mine 101 blocks on node1
+- Send 10 BTC to node2
+- Mine another block to confirm the transaction
+- Display the balance of node2
+
+```
 ./setup.sh
-This script will:
+```
 
-Wait for both nodes to be ready
+## 🧪 Useful Docker Commands
 
-Create wallets on both nodes
+### Get blockchain info
 
-Mine 101 blocks on node1 (to activate coinbase rewards)
+```
+docker exec node1 bitcoin-cli -regtest -rpcuser=user -rpcpassword=pass getblockchaininfo
+```
 
-Send 10 BTC to an address on node2
+### Get new address
 
-Mine 1 more block to confirm the transaction
+```
+docker exec node1 bitcoin-cli -regtest -rpcuser=user -rpcpassword=pass getnewaddress
+```
 
-🔧 Interacting with Nodes Manually
-Get Balance of node1
-docker exec node1 bitcoin-cli -regtest -rpcuser=user -rpcpassword=pass getbalance
-Get Balance of node2
-docker exec node2 bitcoin-cli -regtest -rpcuser=user -rpcpassword=pass -rpcport=18446 getbalance
-Send BTC from node1 to node2
-docker exec node2 bitcoin-cli -regtest -rpcuser=user -rpcpassword=pass -rpcport=18446 getnewaddress
+### Check wallet balance
 
-# Use the address above in this command:
-docker exec node1 bitcoin-cli -regtest -rpcuser=user -rpcpassword=pass sendtoaddress <ADDRESS> 5
-Then mine a block to confirm:
-docker exec node1 bitcoin-cli -regtest -rpcuser=user -rpcpassword=pass generatetoaddress 1 "$(docker exec node1 bitcoin-cli -regtest -rpcuser=user -rpcpassword=pass getnewaddress)"
-🧹 Cleanup
-To stop and remove everything:
+```
+docker exec node2 bitcoin-cli -regtest -rpcuser=user -rpcpassword=pass getbalance
+```
+
+### View peer connections
+
+```
+docker exec node1 bitcoin-cli -regtest -rpcuser=user -rpcpassword=pass getpeerinfo
+```
+
+## 🧹 Cleaning Up
+
+To stop and remove all running containers, networks, and volumes:
+
+```
 docker-compose down -v
+```
+
+## ⚙️ Configuration Details
+
+- **Regtest Mode**: Allows instant block generation and testing.
+- **Node RPC Ports**:
+  - node1: 18443 (RPC), 18444 (P2P)
+  - node2: 18446 (RPC), 18445 (P2P)
+- **Wallets**:
+  - `wallet1` (node1)
+  - `wallet2` (node2)
+
+## 📌 Notes
+
+- Ensure the fallback transaction fee is enabled in your Bitcoin config if needed for transactions.
+- Regtest is offline; nothing is connected to Bitcoin mainnet or testnet.
+
+## 📧 Contact
+
+Raise an issue in the repository for any questions or assistance.
+
+---
+
+Happy BUIDLing! 🛠️
