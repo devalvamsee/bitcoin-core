@@ -21,11 +21,6 @@ bitcoin-regtest-docker/
 ├── docker-compose.yaml
 ├── setup.sh
 └── README.md
-
-yaml
-Copy
-Edit
-
 ---
 
 ## 🛠️ Requirements
@@ -39,20 +34,13 @@ Edit
 
 ### 1. Clone the Repository
 
-```bash
 git clone https://github.com/yourusername/bitcoin-regtest-docker.git
 cd bitcoin-regtest-docker
 2. Build and Start the Nodes
-bash
-Copy
-Edit
 docker-compose down -v        # Clean up any previous runs
 docker-compose build          # Build the Docker image
 docker-compose up -d          # Start the Bitcoin nodes
 3. Run the Setup Script
-bash
-Copy
-Edit
 ./setup.sh
 This script will:
 
@@ -68,33 +56,16 @@ Mine 1 more block to confirm the transaction
 
 🔧 Interacting with Nodes Manually
 Get Balance of node1
-bash
-Copy
-Edit
 docker exec node1 bitcoin-cli -regtest -rpcuser=user -rpcpassword=pass getbalance
 Get Balance of node2
-bash
-Copy
-Edit
 docker exec node2 bitcoin-cli -regtest -rpcuser=user -rpcpassword=pass -rpcport=18446 getbalance
 Send BTC from node1 to node2
-bash
-Copy
-Edit
 docker exec node2 bitcoin-cli -regtest -rpcuser=user -rpcpassword=pass -rpcport=18446 getnewaddress
 
 # Use the address above in this command:
 docker exec node1 bitcoin-cli -regtest -rpcuser=user -rpcpassword=pass sendtoaddress <ADDRESS> 5
 Then mine a block to confirm:
-
-bash
-Copy
-Edit
 docker exec node1 bitcoin-cli -regtest -rpcuser=user -rpcpassword=pass generatetoaddress 1 "$(docker exec node1 bitcoin-cli -regtest -rpcuser=user -rpcpassword=pass getnewaddress)"
 🧹 Cleanup
 To stop and remove everything:
-
-bash
-Copy
-Edit
 docker-compose down -v
