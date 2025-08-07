@@ -17,6 +17,7 @@ This project sets up a **2-node Bitcoin Core network** in **regtest mode** using
 bitcoin-core/
 ├── Dockerfile
 ├── docker-compose.yaml
+├── Documentation.md 
 ├── setup.sh
 └── README.md
 ```
@@ -108,4 +109,3 @@ Raise an issue in the repository for any questions or assistance.
 
 ---
 
-Happy BUIDLing! 🛠️
